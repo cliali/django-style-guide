@@ -1,0 +1,70 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:14.1
+    container_name: postgres
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_DB={{cookiecutter.project_slug}}
+      - POSTGRES_USER={{cookiecutter.postgres_user}}
+      - POSTGRES_PASSWORD={{cookiecutter.postgres_password}}
+
+  django:
+    build:
+      context: .
+      dockerfile: docker/prod.Dockerfile
+    container_name: django
+    command: ./docker/web_entrypoint.sh
+    environment:
+      - DATABASE_URL=postgres://{{cookiecutter.postgres_user}}:{{cookiecutter.postgres_password}}@db:5432/{{cookiecutter.project_slug}}
+      - CELERY_BROKER_URL=redis://redis:6379/1
+    volumes:
+      - .:/app
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+      - redis
+    restart: on-failure
+
+  redis:
+    image: redis:6.2-alpine
+    container_name: redis
+    ports:
+      - 6379:6379
+    restart: always
+
+  celery:
+    build:
+      context: .
+      dockerfile: ./docker/prod.Dockerfile
+    container_name: worker
+    command: ./docker/celery_entrypoint.sh
+    volumes:
+      - .:/app
+    environment:
+      - DATABASE_URL=postgres://{{cookiecutter.postgres_user}}:{{cookiecutter.postgres_password}}@db:5432/{{cookiecutter.project_slug}}
+      - CELERY_BROKER_URL=redis://redis:6379/1
+    depends_on:
+      - db
+      - redis
+    restart: on-failure
+
+  beats:
+    build:
+      context: .
+      dockerfile: ./docker/prod.Dockerfile
+    container_name: beats
+    command: ./docker/beats_entrypoint.sh
+    volumes:
+      - .:/app
+    environment:
+      - DATABASE_URL=postgres://{{cookiecutter.postgres_user}}:{{cookiecutter.postgres_password}}@db:5432/{{cookiecutter.project_slug}}
+      - CELERY_BROKER_URL=redis://redis:6379/1
+    depends_on:
+      - db
+      - redis
+      - django
+    restart: on-failure

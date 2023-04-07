@@ -1,0 +1,114 @@
+version: "3.9"
+
+services:
+
+  db:
+    image: postgres:14.1
+    container_name: postgres
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_DB={{cookiecutter.project_slug}}
+      - POSTGRES_USER={{cookiecutter.postgres_user}}
+      - POSTGRES_PASSWORD={{cookiecutter.postgres_password}}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data/
+
+  redis:
+    image: redis:6.2-alpine
+    container_name: redis
+    ports:
+      - 6379:6379
+    restart: always
+    volumes:
+      - redis-data:/data
+
+  pgadmin:
+    container_name: pgadmin4_container
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: 'pg_pass'
+    ports:
+      - "5050:80"
+  
+  smtp4dev:
+    image: rnwood/smtp4dev:v3
+    container_name: smtp4dev
+    ports:
+      - 5000:80
+      - 25:25
+    restart: always
+
+  flower:
+    build:
+      context: .
+      dockerfile: ./docker/dev.Dockerfile
+    container_name: flower
+    command: celery -A config flower
+    depends_on:
+      - db
+      - redis
+      - celery
+    environment:
+      - DEBUG=1
+      - CELERY_BROKER=redis://redis:6379/0
+      - CELERY_BACKEND=redis://redis:6379/0
+    ports:
+      - 5555:5555
+
+  celery:
+    build:
+      context: .
+      dockerfile: ./docker/dev.Dockerfile
+    container_name: worker
+    command: ./docker/celery_entrypoint.sh
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+    environment:
+      - DEBUG=1
+    depends_on:
+      - db
+      - redis
+    restart: on-failure
+
+  beats:
+    build:
+      context: .
+      dockerfile: ./docker/dev.Dockerfile
+    container_name: beats
+    command: ./docker/beats_entrypoint.sh
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+    environment:
+      - DEBUG=1
+      - DATABASE_URL=postgres://{{cookiecutter.postgres_user}}:{{cookiecutter.postgres_password}}@db:5432/{{cookiecutter.project_slug}}
+    depends_on:
+      - db
+      - redis
+    restart: on-failure
+
+  tests:
+    build:
+      context: .
+      dockerfile: ./docker/dev.Dockerfile
+    container_name: tests
+    command: ./wait-for-it.sh db:3306 -- ptw
+    depends_on:
+      - redis
+      - db
+    tty: true
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+
+volumes:
+    postgres-data:
+    redis-data:
+
