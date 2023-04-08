@@ -159,4 +159,3 @@ from config.settings.smtp4dev import *  # noqa
 from config.settings.swagger import *  # noqa
 #from config.settings.email_sending import *  # noqa
 #from config.settings.sentry import *  # noqa
-# from config.settings.simple_jwt import *  # noqa
