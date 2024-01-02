@@ -4,7 +4,7 @@ import shutil
 
 lisence = "{{cookiecutter.license}}"
 jwt = "{{cookiecutter.use_jwt}}"
-project_slug = "{{
+project_slug = "{{cookiecutter.project_slug}}"
 
 def delete_resource(resource):
     if os.path.isfile(resource):
