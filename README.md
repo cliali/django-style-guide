@@ -15,4 +15,4 @@ setup the project
 cookiecutter https://github.com/cliali/django-style-guide.git
 ```
 
-
+## other instructions in project README.md file.
