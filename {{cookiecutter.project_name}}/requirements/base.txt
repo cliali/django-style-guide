@@ -14,7 +14,7 @@ django-extensions==3.2.1
 django-filter==22.1
 django-redis==5.2.0
 django-storages==1.13.1
-django-template-mail==1.1.1
+django-template-mail==0.1
 
 djangorestframework==3.13.1
 djangorestframework-simplejwt==5.2.2
