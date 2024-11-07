@@ -1,19 +1,12 @@
-# This docker file is used for local development via docker-compose
-# Creating image based on official python3 image
-FROM python:3.10
+FROM python:3.13-slim-bookworm
 
-# Fix python printing
-ENV PYTHONUNBUFFERED 1
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
-# Required to install mysqlclient with Pip
-RUN apt-get update \
-  && apt-get install python3-dev default-libmysqlclient-dev gcc -y
+WORKDIR /app
 
-# Installing all python dependencies
-ADD requirements/ requirements/
-RUN pip install -r requirements/dev.txt
+COPY pyproject.toml uv.lock README.md ./
+RUN uv sync --frozen --no-cache
+ENV PATH="/app/.venv/bin:$PATH"
 
 # Get the django project into the docker container
-RUN mkdir /app
-WORKDIR /app
-ADD ./ /app/
+ADD . /app
