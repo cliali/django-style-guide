@@ -6,10 +6,6 @@ from config.env import env
 DEBUG = False
 PASSWORD_HASHERS = ['django.contrib.auth.hashers.MD5PasswordHasher']
 
-CELERY_BROKER_BACKEND = "memory"
-CELERY_TASK_ALWAYS_EAGER = True
-CELERY_TASK_EAGER_PROPAGATES = True
-
 REDIS_URL = env('REDIS_URL', default='redis://redis:6379/1')
 CACHES = {
     "default": {
