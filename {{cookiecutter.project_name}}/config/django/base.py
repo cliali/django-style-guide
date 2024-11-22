@@ -78,7 +78,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 
 # Database
-# https://docs.djangoproject.com/en/3.0/ref/settings/#databases
+# https://docs.djangoproject.com/en/dev/ref/settings/#databases
 
 DATABASES = {
     'default': env.db('DATABASE_URL', default='postgres://{{cookiecutter.postgres_user}}:{{cookiecutter.postgres_password}}@127.0.0.1:5432/{{cookiecutter.project_slug}}'),
@@ -99,7 +99,7 @@ if os.environ.get('GITHUB_WORKFLOW'):
 
 
 # Password validation
-# https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
+# https://docs.djangoproject.com/en/dev/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -120,7 +120,7 @@ AUTH_PASSWORD_VALIDATORS = [
 AUTH_USER_MODEL = 'core.User'
 
 # Internationalization
-# https://docs.djangoproject.com/en/3.0/topics/i18n/
+# https://docs.djangoproject.com/en/dev/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
 
@@ -134,7 +134,7 @@ USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/3.0/howto/static-files/
+# https://docs.djangoproject.com/en/dev/howto/static-files/
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'

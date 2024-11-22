@@ -1,13 +1,12 @@
 from django.conf import settings
-from django.shortcuts import get_object_or_404
-from django.http import Http404
 from django.core.exceptions import ImproperlyConfigured
-
+from django.http import Http404
+from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 
 
 def make_mock_object(**kwargs):
-    return type("", (object, ), kwargs)
+    return type("", (object,), kwargs)
 
 
 def get_object(model_or_queryset, **kwargs):
@@ -22,11 +21,11 @@ def get_object(model_or_queryset, **kwargs):
 
 
 def create_serializer_class(name, fields):
-    return type(name, (serializers.Serializer, ), fields)
+    return type(name, (serializers.Serializer,), fields)
 
 
 def inline_serializer(*, fields, data=None, **kwargs):
-    serializer_class = create_serializer_class(name='', fields=fields)
+    serializer_class = create_serializer_class(name="", fields=fields)
 
     if data is not None:
         return serializer_class(data=data, **kwargs)
@@ -54,6 +53,8 @@ def assert_settings(required_settings, error_message_prefix=""):
 
         stringified_not_present = ", ".join(not_present)
 
-        raise ImproperlyConfigured(f"{error_message_prefix} Could not find: {stringified_not_present}")
+        raise ImproperlyConfigured(
+            f"{error_message_prefix} Could not find: {stringified_not_present}"
+        )
 
     return values

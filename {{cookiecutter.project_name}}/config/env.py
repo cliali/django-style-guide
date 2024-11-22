@@ -1,6 +1,5 @@
-from django.core.exceptions import ImproperlyConfigured
-
 import environ
+from django.core.exceptions import ImproperlyConfigured
 
 env = environ.Env()
 
@@ -12,4 +11,6 @@ def env_to_enum(enum_cls, value):
         if x.value == value:
             return x
 
-    raise ImproperlyConfigured(f"Env value {repr(value)} could not be found in {repr(enum_cls)}")
+    raise ImproperlyConfigured(
+        f"Env value {repr(value)} could not be found in {repr(enum_cls)}"
+    )
