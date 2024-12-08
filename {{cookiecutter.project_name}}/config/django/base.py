@@ -29,6 +29,9 @@ THIRD_PARTY_APPS = [
     'django_filters',
     'drf_spectacular',
     'djoser',
+    'crispy_forms',
+    'crispy_tailwind',
+    'compressor',
 ]
 
 INSTALLED_APPS = [
@@ -153,5 +156,7 @@ from config.settings.redis import *  # noqa
 from config.settings.rest import *  # noqa
 from config.settings.sessions import *  # noqa
 from config.settings.swagger import *  # noqa
+from config.settings.crispy import *  # noqa
+from config.settings.compressor import *  # noqa
 # from config.settings.email_sending import *  # noqa
 # from config.settings.sentry import *  # noqa
