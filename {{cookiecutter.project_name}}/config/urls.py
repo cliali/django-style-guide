@@ -15,4 +15,8 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/", include(("{{cookiecutter.project_slug}}.api.urls", "api"))),
     path("core/", include(("{{cookiecutter.project_slug}}.core.urls", "core"))),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
